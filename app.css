@@ -1,0 +1,14 @@
+.todolist {
+	padding: 0;
+}
+.todolist input {
+	margin: 10px;
+	background: transparent;
+	font-weight: bold;
+	border: none;
+}
+.todolist button {
+	color: red;
+	background: transparent;
+	border: none;
+}
