@@ -65,22 +65,30 @@ var element = {
 			element[key] = properties[key];
 		})
 		return element;
+	},
+	createElementWithProperties: function(type, key) {
+		var element = document.createElement(type);
+		var properties = getProperties(type, key);
+		Object.keys(properties).forEach(function(key) {
+			element[key] = properties[key];
+		})
+		return element;
+	}
+}
+
+var todo = {
+	loadTodos: function() {
+		element.clearElement(ROOT_ID);
+		Object.keys(todoList).forEach(function(key) {
+			createTodo(todoList[key].text, key, false);
+			nextId = parseInt(key)+1;
+		})
 	}
 }
 
 
-
-
-
-function createElementWithProperties(type, key) {
-	return addPropertiesToElement(
-		createElement(type),
-		getProperties(type, key),
-	)
-}
-
 function loadTodos() {
-	clearElement(ROOT_ID);
+	element.clearElement(ROOT_ID);
 	Object.keys(todoList).forEach(function(key) {
 		createTodo(todoList[key].text, key, false);
 		nextId = parseInt(key)+1;
@@ -104,10 +112,10 @@ function updateTodo(id, target) {
 function createTodo(value, key, updateLocalStorageOrNot) {
 	var valueNode = document.createTextNode(value);
 
-	var li = createElementWithProperties(elementsList.TODO_ROOT, key);
-	var div = createElementWithProperties(elementsList.TODO, key);
-	var input = createElementWithProperties(elementsList.CHECKBOX, key);
-	var closeBtn = createElementWithProperties(elementsList.CLOSE, key);
+	var li = element.createElementWithProperties(elementsList.TODO_ROOT, key);
+	var div = element.createElementWithProperties(elementsList.TODO, key);
+	var input = element.createElementWithProperties(elementsList.CHECKBOX, key);
+	var closeBtn = element.createElementWithProperties(elementsList.CLOSE, key);
 	
 
 	input.onchange = function(e) {
@@ -141,7 +149,7 @@ function add(e) {
 }
 
 function completed() {
-	clearElement(ROOT_ID);
+	element.clearElement(ROOT_ID);
 	Object.keys(todoList).forEach(function(key) {
 		var todo = todoList[key];
 		if(todo.status) {
@@ -151,7 +159,7 @@ function completed() {
 }
 
 function active() {
-	clearElement(ROOT_ID);
+	element.clearElement(ROOT_ID);
 	Object.keys(todoList).forEach(function(key) {
 		var todo = todoList[key];
 		if(!todo.status) {
