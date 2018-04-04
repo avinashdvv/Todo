@@ -50,8 +50,12 @@ var getProperties = function(type, key) {
 
 window.onload = function(){
 	todoList = JSON.parse(localStorage.getItem("todo")) || {};
-	loadTodos();
+	app.loadTodos();
 };
+
+function updateLocalStorage() {
+	localStorage.setItem("todo", JSON.stringify(todoList));
+}
 
 var element = {
 	clearElement: function(id) {
@@ -60,110 +64,100 @@ var element = {
 	createElement: function(type) {
 		return document.createElement(type)
 	},
-	addPropertiesToElement: function(element, properties) {
+	addPropertiesToElement: function(ele, properties) {
 		Object.keys(properties).forEach(function(key) {
-			element[key] = properties[key];
+			ele[key] = properties[key];
 		})
 		return element;
 	},
 	createElementWithProperties: function(type, key) {
-		var element = document.createElement(type);
+		var ele = document.createElement(type);
 		var properties = getProperties(type, key);
 		Object.keys(properties).forEach(function(key) {
-			element[key] = properties[key];
+			ele[key] = properties[key];
 		})
-		return element;
+		return ele;
 	}
 }
 
 var todo = {
+	removeTodo: function(id) {
+		delete todoList[id];
+		document.getElementById("todo_"+id).remove();
+		updateLocalStorage();
+	},
+	updateTodo: function(id, target) {
+		todoList[id].status = target.checked;
+		updateLocalStorage();
+	},
+	createTodo: function(value, key, updateLocalStorageOrNot) {
+		var valueNode = document.createTextNode(value);
+
+		var li = element.createElementWithProperties(elementsList.TODO_ROOT, key);
+		var div = element.createElementWithProperties(elementsList.TODO, key);
+		var input = element.createElementWithProperties(elementsList.CHECKBOX, key);
+		var closeBtn = element.createElementWithProperties(elementsList.CLOSE, key);
+		
+
+		input.onchange = function(e) {
+			todo.updateTodo(key, e.target);
+		}
+		
+		closeBtn.onclick = function(e) {
+			todo.removeTodo(key);
+		}
+
+		if (updateLocalStorageOrNot) {
+			var id = nextId;
+			todoList[id] = {
+				id: id,
+				text: value,
+				status: false
+			}
+			updateLocalStorage();
+			nextId += 1;
+		}
+
+		div.appendChild(input);
+		div.appendChild(valueNode);
+		div.appendChild(closeBtn);
+		root.appendChild(div);
+	}
+}
+
+
+
+
+var app = {
+	add: function(e) {
+		todo.createTodo(e.value, nextId, true);
+		e.value = "";
+	},
+	completed: function() {
+		element.clearElement(ROOT_ID);
+		Object.keys(todoList).forEach(function(key) {
+			var todo = todoList[key];
+			if(todo.status) {
+				todo.createTodo(todo.text, key, false);
+			}
+		})
+	},
+	active: function(){
+		element.clearElement(ROOT_ID);
+		Object.keys(todoList).forEach(function(key) {
+			var todo = todoList[key];
+			if(!todo.status) {
+				todo.createTodo(todo.text, key, false);
+			}
+		})
+	},
 	loadTodos: function() {
 		element.clearElement(ROOT_ID);
 		Object.keys(todoList).forEach(function(key) {
-			createTodo(todoList[key].text, key, false);
+			todo.createTodo(todoList[key].text, key, false);
 			nextId = parseInt(key)+1;
 		})
-	}
+	},
 }
 
 
-function loadTodos() {
-	element.clearElement(ROOT_ID);
-	Object.keys(todoList).forEach(function(key) {
-		createTodo(todoList[key].text, key, false);
-		nextId = parseInt(key)+1;
-	})
-}
-function updateLocalStorage() {
-	localStorage.setItem("todo", JSON.stringify(todoList));
-}
-
-function removeTodo(id) {
-	delete todoList[id];
-	document.getElementById("todo_"+id).remove();
-	updateLocalStorage();
-}
-
-function updateTodo(id, target) {
-	todoList[id].status = target.checked;
-	updateLocalStorage();
-}
-
-function createTodo(value, key, updateLocalStorageOrNot) {
-	var valueNode = document.createTextNode(value);
-
-	var li = element.createElementWithProperties(elementsList.TODO_ROOT, key);
-	var div = element.createElementWithProperties(elementsList.TODO, key);
-	var input = element.createElementWithProperties(elementsList.CHECKBOX, key);
-	var closeBtn = element.createElementWithProperties(elementsList.CLOSE, key);
-	
-
-	input.onchange = function(e) {
-		updateTodo(key, e.target);
-	}
-	
-	closeBtn.onclick = function(e) {
-		removeTodo(key);
-	}
-
-	if (updateLocalStorageOrNot) {
-		var id = nextId;
-		todoList[id] = {
-			id: id,
-			text: value,
-			status: false
-		}
-		updateLocalStorage();
-		nextId += 1;
-	}
-
-	div.appendChild(input);
-	div.appendChild(valueNode);
-	div.appendChild(closeBtn);
-	root.appendChild(div);
-}
-
-function add(e) {
-	createTodo(e.value, nextId, true);
-	e.value = "";
-}
-
-function completed() {
-	element.clearElement(ROOT_ID);
-	Object.keys(todoList).forEach(function(key) {
-		var todo = todoList[key];
-		if(todo.status) {
-			createTodo(todo.text, key, false);
-		}
-	})
-}
-
-function active() {
-	element.clearElement(ROOT_ID);
-	Object.keys(todoList).forEach(function(key) {
-		var todo = todoList[key];
-		if(!todo.status) {
-			createTodo(todo.text, key, false);
-		}
-	})
-}
