@@ -12,6 +12,7 @@
         var todo = new Todo(name, todoList);
         input.onchange = function(e) {
             todo.controller.createTodo(e.target.value);
+            e.target.value = "";
         }
     }
 })()

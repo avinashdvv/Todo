@@ -45,30 +45,35 @@
             return document.createTextNode(value);
         }
     }
+    
 
     function Template(key) {
-        self = this;
-        this.li = element.createElementWithProperties(elementsList.TODO_ROOT, key);
-		this.div = element.createElementWithProperties(elementsList.TODO, key);
-        this.input = element.createElementWithProperties(elementsList.CHECKBOX, key);
-        this.label = "";
-        this.button = element.createElementWithProperties(elementsList.CLOSE, key);
-        this.button.innerHTML = "X";
-        this.button.onclick = function() {
-            self.li.remove();
+        this.Todo = function() {
+            self = this;
+            this.li = element.createElementWithProperties(elementsList.TODO_ROOT, key);
+            this.div = element.createElementWithProperties(elementsList.TODO, key);
+            this.input = element.createElementWithProperties(elementsList.CHECKBOX, key);
+            this.label = "";
+            this.button = element.createElementWithProperties(elementsList.CLOSE, key);
+            this.button.innerHTML = "X";
+            this.button.onclick = function() {
+                self.li.remove();
+            }
+            this.input.onclick = function(e) {
+                self.input.checked = e.target.checked;
+            }
         }
-        this.input.onclick = function(e) {
-            self.input.checked = e.target.checked;
-        }
+        
     }
 
     Template.prototype.create = function(root, value) {
-        this.label = element.createTextNode(value);
-        this.div.appendChild(this.input);
-        this.div.appendChild(this.label);
-        this.div.appendChild(this.button);
-        this.li.appendChild(this.div);
-        root.appendChild(this.li);
+        var todo = new this.Todo();
+        todo.label = element.createTextNode(value);
+        todo.div.appendChild(todo.input);
+        todo.div.appendChild(todo.label);
+        todo.div.appendChild(todo.button);
+        todo.li.appendChild(todo.div);
+        root.appendChild(todo.li);
     }
     Template.prototype.update = function() {
         self = this;
