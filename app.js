@@ -68,15 +68,12 @@ var element = {
 		Object.keys(properties).forEach(function(key) {
 			ele[key] = properties[key];
 		})
-		return element;
+		return ele;
 	},
 	createElementWithProperties: function(type, key) {
-		var ele = document.createElement(type);
+		var ele = element.createElement(type);
 		var properties = getProperties(type, key);
-		Object.keys(properties).forEach(function(key) {
-			ele[key] = properties[key];
-		})
-		return ele;
+		return element.addPropertiesToElement(ele, properties);
 	}
 }
 
@@ -136,18 +133,18 @@ var app = {
 	completed: function() {
 		element.clearElement(ROOT_ID);
 		Object.keys(todoList).forEach(function(key) {
-			var todo = todoList[key];
-			if(todo.status) {
-				todo.createTodo(todo.text, key, false);
+			var todoVal = todoList[key];
+			if(todoVal.status) {
+				todo.createTodo(todoVal.text, key, false);
 			}
 		})
 	},
 	active: function(){
 		element.clearElement(ROOT_ID);
 		Object.keys(todoList).forEach(function(key) {
-			var todo = todoList[key];
-			if(!todo.status) {
-				todo.createTodo(todo.text, key, false);
+			var todoVal = todoList[key];
+			if(!todoVal.status) {
+				todo.createTodo(todoVal.text, key, false);
 			}
 		})
 	},
@@ -159,5 +156,3 @@ var app = {
 		})
 	},
 }
-
-
