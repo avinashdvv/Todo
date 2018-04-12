@@ -50,16 +50,17 @@
     function Template(key) {
         this.Todo = function() {
             self = this;
-            this.li = element.createElementWithProperties(elementsList.TODO_ROOT, key);
-            this.div = element.createElementWithProperties(elementsList.TODO, key);
-            this.input = element.createElementWithProperties(elementsList.CHECKBOX, key);
-            this.label = "";
-            this.button = element.createElementWithProperties(elementsList.CLOSE, key);
-            this.button.innerHTML = "X";
-            this.button.onclick = function() {
+            self.li = element.createElementWithProperties(elementsList.TODO_ROOT);
+            self.div = element.createElementWithProperties(elementsList.TODO);
+            self.input = element.createElementWithProperties(elementsList.CHECKBOX);
+            self.label = "";
+            self.button = element.createElementWithProperties(elementsList.CLOSE);
+            self.button.innerHTML = "X";
+            self.button.onclick = function(e) {
+                console.log(self.li.innerHTML);
                 self.li.remove();
             }
-            this.input.onclick = function(e) {
+            self.input.onclick = function(e) {
                 self.input.checked = e.target.checked;
             }
         }
@@ -74,13 +75,6 @@
         todo.div.appendChild(todo.button);
         todo.li.appendChild(todo.div);
         root.appendChild(todo.li);
-    }
-    Template.prototype.update = function() {
-        self = this;
-        
-    }
-    Template.prototype.remove = function() {
-        
     }
     window.app = window.app || {};
     window.app.Template = Template;

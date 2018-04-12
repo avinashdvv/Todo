@@ -4,7 +4,7 @@
     function Todo(name, root) {
         this.name = name;
         this.root = root;
-        this.template = new app.Template(1);
+        this.template = new app.Template();
         this.controller = new app.Controller(this.root, this.template);
     }
 
