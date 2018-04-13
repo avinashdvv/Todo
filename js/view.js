@@ -45,37 +45,36 @@
             return document.createTextNode(value);
         }
     }
-    
-
-    function Template(key) {
-        this.Todo = function() {
-            self = this;
-            self.li = element.createElementWithProperties(elementsList.TODO_ROOT);
-            self.div = element.createElementWithProperties(elementsList.TODO);
-            self.input = element.createElementWithProperties(elementsList.CHECKBOX);
-            self.label = "";
-            self.button = element.createElementWithProperties(elementsList.CLOSE);
-            self.button.innerHTML = "X";
-            self.button.onclick = function(e) {
-                console.log(self.li.innerHTML);
-                self.li.remove();
-            }
-            self.input.onclick = function(e) {
-                self.input.checked = e.target.checked;
-            }
+    function Todo(value, index, remove, update) {
+        var li = element.createElementWithProperties(elementsList.TODO_ROOT);
+        var div = element.createElementWithProperties(elementsList.TODO);
+        var input = element.createElementWithProperties(elementsList.CHECKBOX);
+        var label = element.createTextNode(value);
+        var button = element.createElementWithProperties(elementsList.CLOSE);
+        button.innerHTML = "X";
+        button.onclick = function(e) {
+            remove(index);
         }
-        
+        input.onclick = function(e) {
+            input.checked = e.target.checked;
+            update(index, e.target.checked);
+        }
+        div.appendChild(input);
+        div.appendChild(label);
+        div.appendChild(button);
+        li.appendChild(div);
+        return li;
     }
 
-    Template.prototype.create = function(root, value) {
-        var todo = new this.Todo();
-        todo.label = element.createTextNode(value);
-        todo.div.appendChild(todo.input);
-        todo.div.appendChild(todo.label);
-        todo.div.appendChild(todo.button);
-        todo.li.appendChild(todo.div);
-        root.appendChild(todo.li);
+    function View(key) {
+    }
+
+    View.prototype.createTodo = function(value, index, remove, update) {
+        return new Todo(value, index, remove, update);
+    }
+    View.prototype.render = function() {
+
     }
     window.app = window.app || {};
-    window.app.Template = Template;
+    window.app.View = View;
 })(window)
