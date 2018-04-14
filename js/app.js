@@ -11,7 +11,6 @@
 
     window.setView = function setView(name, input, todoList){
         var todo = new Todo(name, todoList);
-        // debugger;
         if (todo.model.todolist.length > 0 ) {
             todo.controller.renderTodoList();
         }

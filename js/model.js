@@ -1,11 +1,26 @@
 (function (window) {
+    
     function updateStorage(name, data) {
         localStorage.setItem(name, JSON.stringify(data))
     }
     function Model(name){
         this.name = name;
         this.todolist = JSON.parse(localStorage.getItem(name)) || [];
+        this.todolist = new ArrayOberverble(this.todolist);
+        this.todolist.addEventListener("itemadded", function(e) {
+            console.log("Added %o at index %d.", e.item, e.index);
+        });
+    
+        this.todolist.addEventListener("itemset", function(e) {
+            console.log("Set index %d to %o.", e.index, e.item);
+        });
+    
+        // this.todolist.addEventListener("itemremoved", function(e) {
+        //     console.log("Removed %o at index %d.", e.item, e.index);
+        // });
+         
     }
+    
     Model.prototype.createTodo = function(data, checked) {
         this.todolist.push({
            text: data,

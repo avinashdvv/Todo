@@ -10,8 +10,10 @@
         }
         this.removeTodo = function(id) {
             self.model.removeTodo(id);
-            self.renderTodoList()
         }
+        this.todoList.addEventListener("itemremoved", function(e) {
+            self.renderTodoList();
+        });
     }
     Controller.prototype.createTodo = function(value) {
         var todoView = this.view.createTodo(
